@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "595867597104",
+    "project_id": "ecommerce-c3a98",
+    "storage_bucket": "ecommerce-c3a98.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595867597104:android:46c9dee0d90bd4f54ef0f5",
+        "android_client_info": {
+          "package_name": "com.example.liedle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4Kh3rkzHPJdihWfpa6F3MqOej7yCPpw4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
