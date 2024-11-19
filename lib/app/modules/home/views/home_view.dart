@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:liedle/app/modules/audio/views/AudioPlayer_Views.dart';
 import 'package:liedle/app/modules/category/views/category_view.dart';
 import 'package:liedle/app/modules/login/views/login_view.dart';
 import 'package:liedle/app/modules/notifications/notification_view.dart';
 import 'package:liedle/app/modules/setting_profile/views/setting_view.dart';
+import '../../record/views/SpeechToTextViews.dart';
 import '../controllers/home_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -45,22 +47,22 @@ class HomeView extends StatelessWidget {
               leading: Icon(Icons.home),
               title: Text('Home'),
               onTap: () {
-                Navigator.pop(context); 
+                Navigator.pop(context);
               },
             ),
             ListTile(
               leading: Icon(Icons.shopping_bag),
               title: Text('Shop'),
               onTap: () {
-                Get.to(CategoryView()); 
+                Get.to(CategoryView());
               },
             ),
-            if (user != null) ...[ 
+            if (user != null) ...[
               ListTile(
                 leading: Icon(Icons.favorite),
                 title: Text('Wishlist'),
                 onTap: () {
-                  Navigator.pop(context); 
+                  Navigator.pop(context);
                 },
               ),
               ListTile(
@@ -96,7 +98,21 @@ class HomeView extends StatelessWidget {
               leading: Icon(Icons.person),
               title: Text('Sign Up / Login'),
               onTap: () {
-                Get.to(LoginView()); 
+                Get.to(LoginView());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.mic),
+              title: Text('Voice Recording'),
+              onTap: () {
+                Get.to(SpeechToTextPage());
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.record_voice_over),
+              title: Text('Audio'),
+              onTap: () {
+                Get.to(AudioPlayerPage());
               },
             ),
           ],

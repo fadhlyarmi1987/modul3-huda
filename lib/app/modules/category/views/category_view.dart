@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:liedle/app/routes/app_pages.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import '../controller/category_controller.dart';
 
 class CategoryView extends StatelessWidget {
@@ -11,14 +12,29 @@ class CategoryView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-            onPressed: () {
-              Get.back();
-            },
-            icon: const Icon(Icons.arrow_back_ios)),
+          onPressed: () {
+            Get.back();
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
         title: const Text('CATEGORY'),
         centerTitle: true,
         actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_bag)),
+
+          IconButton(
+            onPressed: () async {
+
+              await controller.pickImage();
+            },
+            icon: const Icon(Icons.camera_alt),
+          ),
+
+          IconButton(
+            onPressed: () async {
+              await controller.pickVideo();
+            },
+            icon: const Icon(Icons.videocam),
+          ),
         ],
       ),
       body: Obx(() {
@@ -39,7 +55,7 @@ class CategoryView extends StatelessWidget {
             final product = controller.products[index];
             return GestureDetector(
               onTap: () {
-                Get.toNamed(Routes.PRODUCT_DETAIL);
+                Get.toNamed('/product-detail');
               },
               child: Card(
                 elevation: 2,

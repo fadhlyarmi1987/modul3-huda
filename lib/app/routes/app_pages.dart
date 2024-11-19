@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:liedle/app/modules/audio/bindings/AudioPlayer_Bindings.dart';
+import 'package:liedle/app/modules/audio/views/AudioPlayer_Views.dart';
 import 'package:liedle/app/modules/category/views/category_view.dart';
 import 'package:liedle/app/modules/home/views/home_view.dart';
 import 'package:liedle/app/modules/login/bindings/login_binding.dart';
@@ -8,6 +10,9 @@ import 'package:liedle/app/modules/notifications/notification_view.dart';
 import 'package:liedle/app/modules/product_detail/bindings/product_detail_bindings.dart';
 import 'package:liedle/app/modules/product_detail/views/product_detail_view.dart';
 import 'package:liedle/app/modules/product_detail/views/product_detail_web_view.dart';
+import 'package:liedle/app/modules/record/bindings/SpeechToText_binding.dart';
+import 'package:liedle/app/modules/record/controller/SpeechToTextController.dart';
+import 'package:liedle/app/modules/record/views/SpeechToTextViews.dart';
 import 'package:liedle/app/modules/register/bindings/register_binding.dart';
 import 'package:liedle/app/modules/register/views/register_view.dart';
 import 'package:liedle/app/modules/setting_profile/binding/setting_binding.dart';
@@ -50,9 +55,10 @@ class AppPages {
       page: () => ProductDetailWebView(),
       //binding: RegisterBinding(),
     ),
-    GetPage(name: _Paths.HOME, 
-      page: () => HomeView(), 
-      binding: HomeBinding() //binding: HomeviewBinding(),
+    GetPage(
+        name: _Paths.HOME,
+        page: () => HomeView(),
+        binding: HomeBinding() //binding: HomeviewBinding(),
         ),
     GetPage(
         name: _Paths.SETTING,
@@ -60,10 +66,17 @@ class AppPages {
         binding: SettingBinding(),
         middlewares: [AuthMiddleware()]),
     GetPage(
-      name: _Paths.NOTIFIKASI, 
-      page: () => NotificationView(),
-      binding: NotificationBinding(),
-      middlewares: [AuthMiddleware()]
-      ),
+        name: _Paths.NOTIFIKASI,
+        page: () => NotificationView(),
+        binding: NotificationBinding(),
+        middlewares: [AuthMiddleware()]),
+    GetPage(
+        name: _Paths.RECORD,
+        page: () => SpeechToTextPage(),
+        binding: SpeechToTexBinding()),
+    GetPage(
+        name: _Paths.AUDIO,
+        page: () => AudioPlayerPage(),
+        binding: AudioplayerBindings()),
   ];
 }

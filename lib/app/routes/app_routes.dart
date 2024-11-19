@@ -11,6 +11,8 @@ abstract class Routes {
   static const WEBVIEW = _Paths.WEBVIEW;
   static const SETTING = _Paths.SETTING;
   static const NOTIFIKASI = _Paths.NOTIFIKASI;
+  static const RECORD = _Paths.RECORD;
+  static const AUDIO = _Paths.AUDIO;
 }
 
 abstract class _Paths {
@@ -23,4 +25,6 @@ abstract class _Paths {
   static const WEBVIEW = '/product_detail_web_view';
   static const SETTING = '/setting';
   static const NOTIFIKASI = '/notifikasi';
+  static const RECORD = '/record';
+  static const AUDIO = '/audio';
 }
