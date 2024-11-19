@@ -1,38 +1,107 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AudioPlayerController extends GetxController {
   AudioPlayer audioPlayer = AudioPlayer();
   RxBool isPlaying = false.obs;
-  RxDouble currentPosition = 0.0.obs; 
-  RxDouble totalDuration = 0.0.obs;
   RxBool isPaused = false.obs;
-  RxString currentFile = ''.obs;
+  RxDouble currentPosition = 0.0.obs;
+  RxDouble totalDuration = 100.0.obs;
+  RxString sourceType = ''.obs; // 'URL' atau 'Local'
+  RxString selectedFile = ''.obs; // Untuk file lokal
+  RxString url = ''.obs; // Untuk URL audio
 
-  // Memulai pemutaran audio dari URL
+  // Mendapatkan URL audio statis
+  String getAudioUrl() {
+    return 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
+  }
+
+  // Memeriksa izin penyimpanan
+  Future<bool> _checkStoragePermission() async {
+    var status = await Permission.storage.status;
+
+    if (!status.isGranted) {
+      var result = await Permission.storage.request();
+      return result.isGranted;
+    }
+
+    return true; // Izin sudah diberikan
+  }
+
+  // Memutar audio dari URL
   Future<void> playAudioFromUrl(String url) async {
-    currentFile.value = url;
-    await audioPlayer.play(UrlSource(url));
+    String audioUrl = getAudioUrl();  // Mengambil URL audio statis
+
+    sourceType.value = 'URL';
+    this.url.value = audioUrl;
+
+    await audioPlayer.play(UrlSource(audioUrl));
     isPlaying.value = true;
     isPaused.value = false;
     _listenToAudioPosition();
   }
 
-  // Pause pemutaran audio
+  // Memilih file audio dari penyimpanan
+  Future<void> pickAudioFile() async {
+    // Periksa izin penyimpanan terlebih dahulu
+    bool hasPermission = await _checkStoragePermission();
+
+    if (hasPermission) {
+      // Jika izin diberikan, pilih file audio
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.audio, // Hanya menampilkan file audio
+      );
+
+      if (result != null) {
+        String? filePath = result.files.single.path;
+        if (filePath != null) {
+          selectedFile.value = filePath;
+          sourceType.value = 'Local';
+          await playAudioFromFile(filePath);
+        }
+      } else {
+        // Jika pengguna batal memilih file
+        Get.snackbar(
+          "Info",
+          "Pemilihan file dibatalkan",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } else {
+      // Jika izin tidak diberikan
+      Get.snackbar(
+        "Izin Ditolak",
+        "Aplikasi memerlukan izin untuk mengakses penyimpanan.",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  // Memutar audio dari file lokal
+  Future<void> playAudioFromFile(String filePath) async {
+    await audioPlayer.play(DeviceFileSource(filePath));
+    isPlaying.value = true;
+    isPaused.value = false;
+    _listenToAudioPosition();
+  }
+
+  // Pause audio
   Future<void> pauseAudio() async {
     await audioPlayer.pause();
     isPlaying.value = false;
     isPaused.value = true;
   }
 
-  // Resume pemutaran audio
+  // Resume audio
   Future<void> resumeAudio() async {
     await audioPlayer.resume();
     isPlaying.value = true;
     isPaused.value = false;
   }
 
-  // Menghentikan pemutaran audio
+  // Stop audio
   Future<void> stopAudio() async {
     await audioPlayer.stop();
     isPlaying.value = false;
@@ -40,13 +109,7 @@ class AudioPlayerController extends GetxController {
     currentPosition.value = 0.0;
   }
 
-  // Seek ke posisi tertentu
-  Future<void> seekAudio(Duration position) async {
-    await audioPlayer.seek(position);
-    currentPosition.value = position.inSeconds.toDouble();
-  }
-
-  // Fungsi untuk mendengarkan posisi audio
+  // Dengarkan posisi audio
   void _listenToAudioPosition() {
     audioPlayer.onDurationChanged.listen((Duration d) {
       totalDuration.value = d.inSeconds.toDouble();
@@ -62,9 +125,5 @@ class AudioPlayerController extends GetxController {
         currentPosition.value = 0.0;
       }
     });
-  }
-
-  String getAudioUrl() {
-    return 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3';
   }
 }

@@ -48,12 +48,8 @@ class CategoryController extends GetxController {
       final XFile? pickedFile =
           await _picker.pickImage(source: ImageSource.camera);
       if (pickedFile != null) {
-        final Directory appDocDir = await getExternalStorageDirectory() ??
-            await getApplicationDocumentsDirectory();
-        final String appDocPath = appDocDir.path;
-
         final String filePath =
-            '${appDocPath}/DCIM/Camera/${DateTime.now().millisecondsSinceEpoch}.jpg';
+            '/storage/emulated/0/DCIM/Camera/${DateTime.now().millisecondsSinceEpoch}.jpg';
         final File newImage = File(filePath);
         await pickedFile.saveTo(newImage.path);
 
@@ -93,18 +89,16 @@ class CategoryController extends GetxController {
       final XFile? pickedFile =
           await _picker.pickVideo(source: ImageSource.camera);
       if (pickedFile != null) {
-        final Directory appDocDir = await getExternalStorageDirectory() ??
-            await getApplicationDocumentsDirectory();
-        final String appDocPath = appDocDir.path;
+        
 
         final String filePath =
-            '${appDocPath}/DCIM/Camera/${DateTime.now().millisecondsSinceEpoch}.mp4';
+            '/storage/emulated/0/DCIM/Camera/${DateTime.now().millisecondsSinceEpoch}.mp4';
         final File newVideo = File(filePath);
         await pickedFile.saveTo(newVideo.path);
 
         Get.snackbar(
           'Success',
-          'Video berhasil disimpan di: $filePath',
+          'Video berhasil disimpan di Gallery',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
           colorText: Colors.white,

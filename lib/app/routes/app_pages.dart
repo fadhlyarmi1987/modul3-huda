@@ -1,4 +1,7 @@
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
+import 'package:audio_service/audio_service.dart';
+import 'package:liedle/app/modules/audio/handler/audio_service_handler.dart';
 import 'package:liedle/app/modules/audio/bindings/AudioPlayer_Bindings.dart';
 import 'package:liedle/app/modules/audio/views/AudioPlayer_Views.dart';
 import 'package:liedle/app/modules/category/views/category_view.dart';

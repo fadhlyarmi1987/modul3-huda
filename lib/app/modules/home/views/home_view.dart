@@ -8,6 +8,7 @@ import 'package:liedle/app/modules/setting_profile/views/setting_view.dart';
 import '../../record/views/SpeechToTextViews.dart';
 import '../controllers/home_controller.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:liedle/app/modules/audio/handler/audio_service_handler.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
