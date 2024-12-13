@@ -13,6 +13,8 @@ abstract class Routes {
   static const NOTIFIKASI = _Paths.NOTIFIKASI;
   static const RECORD = _Paths.RECORD;
   static const AUDIO = _Paths.AUDIO;
+  static const SPLASH = _Paths.SPLASH;
+  static const STORAGESERVICE = _Paths.STORAGESERVICE;
 }
 
 abstract class _Paths {
@@ -27,4 +29,6 @@ abstract class _Paths {
   static const NOTIFIKASI = '/notifikasi';
   static const RECORD = '/record';
   static const AUDIO = '/audio';
+  static const SPLASH = '/splash';
+  static const STORAGESERVICE = '/STORAGESERVICE';
 }

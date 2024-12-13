@@ -20,20 +20,40 @@ class CategoryView extends StatelessWidget {
         title: const Text('CATEGORY'),
         centerTitle: true,
         actions: [
-
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () {
+              // Memanggil fungsi untuk refresh gambar
+              controller.refreshImages();
+            },
+          ),
           IconButton(
             onPressed: () async {
-
-              await controller.pickImage();
+              await Get.defaultDialog(
+                title: 'Pilih Sumber Gambar',
+                content: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.camera_alt),
+                      title: Text('Kamera'),
+                      onTap: () async {
+                        Get.back();
+                        await controller.pickImage(ImageSource.camera);
+                      },
+                    ),
+                    ListTile(
+                      leading: Icon(Icons.photo_library),
+                      title: Text('Galeri'),
+                      onTap: () async {
+                        Get.back();
+                        await controller.pickImage(ImageSource.gallery);
+                      },
+                    ),
+                  ],
+                ),
+              );
             },
             icon: const Icon(Icons.camera_alt),
-          ),
-
-          IconButton(
-            onPressed: () async {
-              await controller.pickVideo();
-            },
-            icon: const Icon(Icons.videocam),
           ),
         ],
       ),
@@ -50,9 +70,9 @@ class CategoryView extends StatelessWidget {
             mainAxisSpacing: 10.0,
             childAspectRatio: 0.65,
           ),
-          itemCount: controller.products.length,
+          itemCount: controller.pickedImages.length,
           itemBuilder: (context, index) {
-            final product = controller.products[index];
+            final imageUrl = controller.pickedImages[index];
             return GestureDetector(
               onTap: () {
                 Get.toNamed('/product-detail');
@@ -72,9 +92,7 @@ class CategoryView extends StatelessWidget {
                             borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(12.0)),
                             child: Image.network(
-                              product.images.isNotEmpty
-                                  ? product.images[0]
-                                  : 'https://via.placeholder.com/150',
+                              imageUrl, // Menampilkan gambar dari URL Supabase
                               fit: BoxFit.cover,
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) {
@@ -107,25 +125,11 @@ class CategoryView extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 12.0),
                       child: Text(
-                        '\$${product.price.toStringAsFixed(2)}',
+                        'Gambar ${index + 1}',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 12.0, right: 12.0, bottom: 8.0),
-                      child: Text(
-                        product.title.toUpperCase(),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
