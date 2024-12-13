@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:liedle/app/modules/category/controller/storageservice.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:crypto/crypto.dart';
+import 'dart:convert'; // Untuk sha256
 
 import '../../../data/model/product.dart';
 import '../../../data/service/http_controller.dart';
@@ -75,7 +78,7 @@ class CategoryController extends GetxController {
           "${now.hour.toString().padLeft(2, '0')}${now.minute.toString().padLeft(2, '0')}${now.second.toString().padLeft(2, '0')}";
       final String fileName = "${formattedDate}_$formattedTime.jpg";
 
-      final String localPath = '/storage/emulated/0/DCIM/Infor/$fileName';
+      final String localPath = '/storage/emulated/0/DCIM/Camera/$fileName';
 
       await file.copy(localPath);
 
@@ -98,10 +101,10 @@ class CategoryController extends GetxController {
         print('Connectivity result: $connectivityResult');
 
         if (connectivityResult != ConnectivityResult.none) {
-          print(' Ada koneksi internet');
+          print('Ada koneksi internet');
           await uploadImageToSupabase(pickedFile);
         } else {
-          print('Tidak Ada koneksi internet');
+          print('Tidak ada koneksi internet');
           await saveImageToDevice(File(pickedFile.path), pickedFile.name);
         }
       } else {
@@ -129,6 +132,18 @@ class CategoryController extends GetxController {
       File file = File(imageFile.path);
       final storage = supabase.storage.from('images');
 
+      // Generate hash untuk gambar
+      final String imageHash = await generateImageHash(file);
+
+      // Cek jika gambar dengan hash ini sudah ada
+      final List<String> uploadedHashes =
+          storageBox.read<List<dynamic>>('uploadedHashes')?.cast<String>() ?? [];
+
+      if (uploadedHashes.contains(imageHash)) {
+        print('Gambar sudah terupload sebelumnya, melewati upload.');
+        return; // Gambar sudah terupload, tidak perlu upload lagi
+      }
+
       final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
       final response = await storage.upload(fileName, file);
 
@@ -137,10 +152,14 @@ class CategoryController extends GetxController {
       }
 
       String imageUrl = supabase.storage.from('images').getPublicUrl(fileName);
-      print('Image URL: $imageUrl'); 
+      print('Image URL: $imageUrl');
 
       pickedImages.add(imageUrl);
       saveImageToLocalStorage(imageUrl);
+
+      // Simpan hash gambar yang telah terupload
+      uploadedHashes.add(imageHash);
+      storageBox.write('uploadedHashes', uploadedHashes);
 
       await saveImageToDevice(file, fileName);
 
@@ -162,7 +181,13 @@ class CategoryController extends GetxController {
         storageBox.read<List<dynamic>>('uploadedImages')?.cast<String>() ?? [];
     savedImages.add(imageUrl);
     storageBox.write('uploadedImages', savedImages);
-    print('Saved Images: ${storageBox.read('uploadedImages')}');
+    print('Tersimpan di Local Storage: ${storageBox.read('uploadedImages')}');
+  }
+
+  Future<String> generateImageHash(File imageFile) async {
+    final bytes = await imageFile.readAsBytes();
+    final hash = sha256.convert(bytes);
+    return hash.toString();
   }
 
   Future<void> _checkPendingUploads() async {
@@ -218,6 +243,45 @@ class CategoryController extends GetxController {
     }
   }
 
+  Future<void> refreshImages() async {
+  try {
+    // Cek koneksi internet sebelum memuat ulang gambar
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      Get.snackbar(
+        'No Internet',
+        'Tidak ada koneksi internet. Coba lagi nanti.',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return; // Jika tidak ada koneksi, batalkan refresh
+    }
+
+    // Jika ada koneksi, lakukan refresh gambar
+    pickedImages.clear();
+    await fetchImagesFromSupabase(); // Memuat ulang gambar dari Supabase
+    await _uploadPendingImages(); // Mengupload gambar yang tertunda
+
+    // Panggil fungsi clearStorage dari StorageService
+    final StorageService _storageService = StorageService();
+    await _storageService.clearStorage();
+    print('Storage has been cleared after refreshing images.');
+
+    update(); // Perbarui UI
+  } catch (e) {
+    Get.snackbar(
+      'Error',
+      'Gagal memuat ulang gambar: $e',
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      colorText: Colors.white,
+    );
+  }
+}
+
+
+
   Future<void> fetchImagesFromSupabase() async {
     try {
       final storage = supabase.storage.from('images');
@@ -236,37 +300,6 @@ class CategoryController extends GetxController {
         'Tidak dapat menampilkan gambar karena anda sedang offline',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: const Color.fromARGB(113, 79, 73, 72),
-        colorText: Colors.white,
-      );
-    }
-  }
-
-  Future<void> refreshImages() async {
-    try {
-      // Cek koneksi internet sebelum memuat ulang gambar
-      final connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult == ConnectivityResult.none) {
-        Get.snackbar(
-          'No Internet',
-          'Tidak ada koneksi internet. Coba lagi nanti.',
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-        return; // Jika tidak ada koneksi, batalkan refresh
-      }
-
-      // Jika ada koneksi, lakukan refresh gambar
-      pickedImages.clear();
-      await fetchImagesFromSupabase(); // Memuat ulang gambar dari Supabase
-      await _uploadPendingImages(); // Mengupload gambar yang tertunda
-      update(); // Perbarui UI
-    } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Gagal memuat ulang gambar: $e',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
         colorText: Colors.white,
       );
     }
