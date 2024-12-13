@@ -16,7 +16,7 @@ class ClearStorageView extends StatelessWidget {
         child: ElevatedButton(
           onPressed: () async {
             await _storageService.clearStorage();
-            Get.snackbar('Success', 'Storage has been cleared');
+            Get.snackbar('Berhasil', 'Lokal Storage berhasil dibersihkan');
           },
           child: Text('Clear Storage'),
         ),
@@ -28,13 +28,13 @@ class ClearStorageView extends StatelessWidget {
 class StorageService {
   final GetStorage _storage = GetStorage();
 
-  /// Clears all data from local storage.
+
   Future<void> clearStorage() async {
     try {
       await _storage.erase();
-      print('Local storage cleared successfully.');
+      print('foto pada lokal storage berhasil dihapus');
     } catch (e) {
-      print('Error clearing local storage: $e');
+      print('Gagal menghapus local storage: $e');
     }
   }
 }

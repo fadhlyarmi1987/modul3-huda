@@ -23,7 +23,6 @@ class CategoryView extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.refresh),
             onPressed: () {
-              // Memanggil fungsi untuk refresh gambar
               controller.refreshImages();
             },
           ),
@@ -92,7 +91,7 @@ class CategoryView extends StatelessWidget {
                             borderRadius: BorderRadius.vertical(
                                 top: Radius.circular(12.0)),
                             child: Image.network(
-                              imageUrl, // Menampilkan gambar dari URL Supabase
+                              imageUrl, 
                               fit: BoxFit.cover,
                               width: double.infinity,
                               errorBuilder: (context, error, stackTrace) {

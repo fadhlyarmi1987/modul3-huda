@@ -33,7 +33,7 @@ class CategoryController extends GetxController {
     initializeSupabase();
     fetchProducts();
     fetchImagesFromSupabase();
-    _checkPendingUploads(); // Mengecek dan mengupload gambar yang tertunda
+    _checkPendingUploads(); 
   }
 
   void initializeSupabase() {
@@ -131,17 +131,13 @@ class CategoryController extends GetxController {
     try {
       File file = File(imageFile.path);
       final storage = supabase.storage.from('images');
-
-      // Generate hash untuk gambar
       final String imageHash = await generateImageHash(file);
-
-      // Cek jika gambar dengan hash ini sudah ada
       final List<String> uploadedHashes =
           storageBox.read<List<dynamic>>('uploadedHashes')?.cast<String>() ?? [];
 
       if (uploadedHashes.contains(imageHash)) {
         print('Gambar sudah terupload sebelumnya, melewati upload.');
-        return; // Gambar sudah terupload, tidak perlu upload lagi
+        return; 
       }
 
       final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -260,8 +256,8 @@ class CategoryController extends GetxController {
 
     // Jika ada koneksi, lakukan refresh gambar
     pickedImages.clear();
-    await fetchImagesFromSupabase(); // Memuat ulang gambar dari Supabase
-    await _uploadPendingImages(); // Mengupload gambar yang tertunda
+    await fetchImagesFromSupabase();
+    await _uploadPendingImages();
 
     // Panggil fungsi clearStorage dari StorageService
     final StorageService _storageService = StorageService();
