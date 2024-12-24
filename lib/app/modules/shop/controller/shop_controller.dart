@@ -18,13 +18,13 @@ class ShopController extends GetxController {
   final TextEditingController priceController = TextEditingController();
   final NumberFormat currencyFormatter = NumberFormat.decimalPattern('id_ID');
   final GetStorage box = GetStorage();
-  final RxBool isConnected = true.obs; // Status koneksi internet
+  final RxBool isConnected = true.obs;
 
   Rx<File?> selectedImage = Rx<File?>(null);
-  var savedProducts = <Map<String, dynamic>>[].obs; // Data produk tersimpan
+  var savedProducts = <Map<String, dynamic>>[].obs; 
   var filteredProducts =
-      <Map<String, dynamic>>[].obs; // Data produk setelah filter
-  final List<Map<String, dynamic>> _queue = []; // Antrean produk
+      <Map<String, dynamic>>[].obs; 
+  final List<Map<String, dynamic>> _queue = []; 
   stt.SpeechToText speech = stt.SpeechToText();
   bool isListening = false;
 
@@ -50,7 +50,6 @@ class ShopController extends GetxController {
           colorText: Colors.white,
           duration: const Duration(seconds: 3),
         );
-
         // Jika tersambung kembali, proses antrean
         if (connected) {
           _processQueue();

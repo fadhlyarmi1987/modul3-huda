@@ -524,9 +524,9 @@ class _HomeViewState extends State<HomeView> {
       child: Text(
         category,
         style: TextStyle(
-          color: Colors.white, // Warna teks putih
-          fontSize: 16, // Ukuran font
-          fontWeight: FontWeight.bold, // Menggunakan font bold
+          color: Colors.white, 
+          fontSize: 16, 
+          fontWeight: FontWeight.bold, 
         ),
       ),
     );
