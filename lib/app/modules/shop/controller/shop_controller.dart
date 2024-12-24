@@ -92,23 +92,31 @@ class ShopController extends GetxController {
       filteredProducts.value = savedProducts;
       box.write('saved_products', savedProducts);
       selectedImage.value = null;
-      Get.snackbar(
-        'Produk Tersimpan',
-        'Produk berhasil Terposting',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-      );
+
+      Future.delayed(Duration(seconds: 3), () {
+        Get.snackbar(
+          'Berhasil',
+          'Produk berhasil diupload',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          duration: Duration(seconds: 3), 
+        );
+      });
     } else {
       // Jika tidak ada koneksi internet, tambahkan ke antrean
       _queue.add(product);
-      Get.snackbar(
-        'Produk Ditambahkan ke Antrean',
-        'Produk akan disimpan otomatis saat koneksi internet tersedia',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.orange,
-        colorText: Colors.white,
-      );
+
+      Future.delayed(Duration(seconds: 3), () {
+        Get.snackbar(
+          'Produk Ditambahkan ke Antrean',
+          'Produk akan disimpan otomatis saat koneksi internet tersedia',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.orange,
+          colorText: Colors.white,
+          duration: Duration(seconds: 3), 
+        );
+      });
     }
   }
 
@@ -123,7 +131,7 @@ class ShopController extends GetxController {
       _queue.clear();
       Get.snackbar(
         'Antrean Diproses',
-        'Semua produk dalam antrean telah disimpan ke penyimpanan lokal',
+        'Semua produk yang diupload ketika offline, berhasil ter-upload',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
@@ -386,7 +394,6 @@ class ShopController extends GetxController {
 
         if (name.isNotEmpty && category.isNotEmpty && price.isNotEmpty) {
           // Menampilkan splash screen dengan delay
-          showLoadingSplashScreen(context);
 
           // Simulasi penyimpanan produk
           saveProduct(
@@ -397,9 +404,8 @@ class ShopController extends GetxController {
           categoryController.clear();
           priceController.clear();
           selectedImage.value = null;
-
-          // Tutup dialog setelah menyimpan
-          Get.back();
+          Navigator.pop(context);
+          showLoadingSplashScreen(context);
         } else {
           Get.snackbar('Error', 'Semua kolom harus diisi');
         }
@@ -411,9 +417,8 @@ class ShopController extends GetxController {
     );
   }
 
-// Fungsi untuk menampilkan splash screen loading
   void showLoadingSplashScreen(BuildContext context) {
-  // Menampilkan splash screen dengan navigasi
-  Get.to(() => SaveProductSplashScreen(productName: nameController.text), opaque: false); // Menggunakan Get.to() untuk navigasi ke SplashScreen
-}
+    Get.to(() => SaveProductSplashScreen(productName: nameController.text),
+        opaque: false); 
+  }
 }
