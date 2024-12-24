@@ -27,7 +27,7 @@ class _AddUserViewState extends State<AddUserView> {
   // Fungsi untuk menyimpan data ke file lokal
   Future<void> _saveUserLocally(String name, String email, String password) async {
     final directory = await getApplicationDocumentsDirectory();
-    final file = File('/storage/emulated/0/Pictures');
+    final file = File('${directory.path}/users_to_upload.json');
     List<Map<String, String>> usersList = [];
 
     // Cek apakah file sudah ada dan baca data sebelumnya
@@ -116,8 +116,20 @@ class _AddUserViewState extends State<AddUserView> {
       appBar: AppBar(
         title: const Text("Tambah User"),
         centerTitle: true,
+        backgroundColor: Colors.blueAccent, // Memberikan warna pada AppBar
       ),
-      body: Padding(
+      body: Container(
+        height: 800,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.blue.shade100,
+              Colors.blue.shade50,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
           child: Column(
@@ -127,6 +139,9 @@ class _AddUserViewState extends State<AddUserView> {
                 decoration: InputDecoration(
                   labelText: 'Nama Lengkap',
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
+                  ),
                 ),
               ),
               SizedBox(height: 10),
@@ -135,6 +150,9 @@ class _AddUserViewState extends State<AddUserView> {
                 decoration: InputDecoration(
                   labelText: 'Email',
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
+                  ),
                 ),
                 keyboardType: TextInputType.emailAddress,
               ),
@@ -144,13 +162,26 @@ class _AddUserViewState extends State<AddUserView> {
                 decoration: InputDecoration(
                   labelText: 'Password',
                   border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
+                  ),
                 ),
                 obscureText: true,
               ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _addUser,
-                child: Text("Tambah User"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent, // Warna tombol
+                  padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 40.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30.0),
+                  ),
+                ),
+                child: Text(
+                  "Tambah User",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             ],
           ),

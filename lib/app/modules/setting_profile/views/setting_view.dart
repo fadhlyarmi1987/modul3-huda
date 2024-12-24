@@ -18,55 +18,100 @@ class SettingView extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Settings'),
         centerTitle: true,
+        backgroundColor: Colors.blueAccent, // Memberikan warna pada AppBar
       ),
-      body: Padding(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Colors.blue.shade200,
+              Colors.blue.shade50,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: ListView(
           children: [
-            // Contoh pengaturan: nama pengguna
-            Obx(() => ListTile(
-                  title: const Text('Username'),
-                  subtitle: Text(controller.username.value),
-                  trailing: IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () async {
-                      // Tampilkan dialog untuk mengedit username
-                      String? newName = await _showEditDialog(context, controller.username.value);
-                      if (newName != null) {
-                        // Dapatkan email pengguna yang sedang login
-                        String? email = _auth.currentUser?.email;
-                        if (email != null) {
-                          // Perbarui username di Firestore
-                          await _firestore.collection('users').doc(email).update({
-                            'name': newName,
-                          });
-                          // Perbarui username di controller
-                          controller.username.value = newName;
-                          Get.snackbar("Berhasil", "Anda Telah Berhasil Merubah Nama",
-                              snackPosition: SnackPosition.BOTTOM,
-                              backgroundColor: const Color.fromARGB(213, 76, 175, 79),
-                              colorText: Colors.white);
+            // Pengaturan Username
+            Obx(() => Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 5,
+                  child: ListTile(
+                    title: const Text('Username', style: TextStyle(fontWeight: FontWeight.bold)),
+                    subtitle: Text(controller.username.value),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blueAccent),
+                      onPressed: () async {
+                        // Tampilkan dialog untuk mengedit username
+                        String? newName = await _showEditDialog(context, controller.username.value);
+                        if (newName != null) {
+                          // Dapatkan email pengguna yang sedang login
+                          String? email = _auth.currentUser?.email;
+                          if (email != null) {
+                            // Perbarui username di Firestore
+                            await _firestore.collection('users').doc(email).update({
+                              'name': newName,
+                            });
+                            // Perbarui username di controller
+                            controller.username.value = newName;
+                            Get.snackbar("Berhasil", "Anda Telah Berhasil Merubah Nama",
+                                snackPosition: SnackPosition.BOTTOM,
+                                backgroundColor: const Color.fromARGB(213, 76, 175, 79),
+                                colorText: Colors.white);
+                          }
                         }
-                      }
+                      },
+                    ),
+                  ),
+                )),
+            const Divider(color: Colors.grey),
+            // Pengaturan Notifikasi
+            Obx(() => Card(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  elevation: 5,
+                  child: SwitchListTile(
+                    title: const Text('Enable Notifications', style: TextStyle(fontWeight: FontWeight.bold)),
+                    value: controller.notificationsEnabled.value,
+                    onChanged: (value) {
+                      controller.toggleNotifications(value);
                     },
                   ),
                 )),
-            const Divider(),
-            // Contoh pengaturan: notifikasi
-            Obx(() => SwitchListTile(
-                  title: const Text('Enable Notifications'),
-                  value: controller.notificationsEnabled.value,
-                  onChanged: (value) {
-                    controller.toggleNotifications(value);
-                  },
-                )),
-            const Divider(),
-            // Contoh pengaturan: keluar
-            ElevatedButton(
-              onPressed: () {
-                controller.logout();
-              },
-              child: const Text('Log Out'),
+            const Divider(color: Colors.grey),
+            // Tombol Log Out
+            Card(
+              margin: const EdgeInsets.symmetric(vertical: 8.0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 5,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent, // Memberikan warna latar belakang tombol
+                  padding: const EdgeInsets.symmetric(vertical: 14.0),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                onPressed: () {
+                  controller.logout();
+                },
+                child: const Text(
+                  'Log Out',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -84,20 +129,20 @@ class SettingView extends StatelessWidget {
           title: const Text('Edit Username'),
           content: TextField(
             controller: textController,
-            decoration: const InputDecoration(hintText: 'masukkan username baru'),
+            decoration: const InputDecoration(hintText: 'Masukkan username baru'),
           ),
           actions: [
             TextButton(
               onPressed: () {
                 Get.back(); // Menutup dialog tanpa mengubah
               },
-              child: const Text('Cancel'),
+              child: const Text('Cancel', style: TextStyle(color: Colors.red)),
             ),
             TextButton(
               onPressed: () {
                 Get.back(result: textController.text); // Kembali dengan hasil input
               },
-              child: const Text('Save'),
+              child: const Text('Save', style: TextStyle(color: Colors.blueAccent)),
             ),
           ],
         );

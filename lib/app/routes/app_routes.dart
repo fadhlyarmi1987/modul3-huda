@@ -14,7 +14,9 @@ abstract class Routes {
   static const RECORD = _Paths.RECORD;
   static const AUDIO = _Paths.AUDIO;
   static const SPLASH = _Paths.SPLASH;
+  static const SPLASHAWAL = _Paths.SPLASHAWAL;
   static const STORAGESERVICE = _Paths.STORAGESERVICE;
+  static const SPLASHADDPRODUCT = _Paths.SPLASHADDPRODUCT;
 }
 
 abstract class _Paths {
@@ -30,5 +32,7 @@ abstract class _Paths {
   static const RECORD = '/record';
   static const AUDIO = '/audio';
   static const SPLASH = '/splash';
+  static const SPLASHAWAL = '/splashawal';
   static const STORAGESERVICE = '/STORAGESERVICE';
+  static const SPLASHADDPRODUCT = '/splashaddproduct';
 }
