@@ -10,7 +10,7 @@ class SplashScreenToPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final randomDuration = [900, 1000, 1100, 1200, 1500][Random().nextInt(5)];
+    final randomDuration = [800, 800, 800, 900, 900, 1000, 1000, 1100, 1200, 1500][Random().nextInt(10)];
     Future.delayed(Duration(milliseconds: randomDuration), () {
       Get.off(() => targetPage);
     });

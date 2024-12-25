@@ -3,13 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-class SaveProductSplashScreen extends StatelessWidget {
+class Deleteproductsplashscreen extends StatelessWidget {
   final String productName;
-  SaveProductSplashScreen({required this.productName});
+  Deleteproductsplashscreen({required this.productName});
 
   @override
   Widget build(BuildContext context) {
-    final randomDuration = [800, 800, 800, 900, 900, 1000, 1000, 1100, 1200, 1500][Random().nextInt(10)];
+    final randomDuration = [1500, 1500, 1600, 1600, 1600, 1700][Random().nextInt(6)];
     Future.delayed(Duration(milliseconds: randomDuration), () {
       Navigator.pop(context); 
     });
@@ -21,15 +21,15 @@ class SaveProductSplashScreen extends StatelessWidget {
           children: [
             SizedBox(height: 80),
             Lottie.asset(
-              'assets/animasi/upload.json', 
-              width: 250, 
-              height: 250, 
+              'assets/animasi/delete.json', 
+              width: 150, 
+              height: 150, 
               fit: BoxFit.contain,
             ),
             SizedBox(height: 20),
             
             Text(
-              'Sedang Mengupload...',
+              'Menghapus....',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,

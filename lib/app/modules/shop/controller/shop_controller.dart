@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:liedle/app/modules/splash_screen/deleteproductsplashscreen.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:intl/intl.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -21,10 +22,9 @@ class ShopController extends GetxController {
   final RxBool isConnected = true.obs;
 
   Rx<File?> selectedImage = Rx<File?>(null);
-  var savedProducts = <Map<String, dynamic>>[].obs; 
-  var filteredProducts =
-      <Map<String, dynamic>>[].obs; 
-  final List<Map<String, dynamic>> _queue = []; 
+  var savedProducts = <Map<String, dynamic>>[].obs;
+  var filteredProducts = <Map<String, dynamic>>[].obs;
+  final List<Map<String, dynamic>> _queue = [];
   stt.SpeechToText speech = stt.SpeechToText();
   bool isListening = false;
 
@@ -38,7 +38,6 @@ class ShopController extends GetxController {
 
   void monitorInternetConnection() {
     Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-      // Perbarui status koneksi berdasarkan hasil
       bool connected = result != ConnectivityResult.none;
       if (connected != isConnected.value) {
         isConnected.value = connected;
@@ -50,7 +49,6 @@ class ShopController extends GetxController {
           colorText: Colors.white,
           duration: const Duration(seconds: 3),
         );
-        // Jika tersambung kembali, proses antrean
         if (connected) {
           _processQueue();
         }
@@ -92,28 +90,28 @@ class ShopController extends GetxController {
       box.write('saved_products', savedProducts);
       selectedImage.value = null;
 
-      Future.delayed(Duration(seconds: 3), () {
+      Future.delayed(Duration(seconds: 1), () {
         Get.snackbar(
           'Berhasil',
           'Produk berhasil diupload',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.green,
           colorText: Colors.white,
-          duration: Duration(seconds: 3), 
+          duration: Duration(seconds: 3),
         );
       });
     } else {
       // Jika tidak ada koneksi internet, tambahkan ke antrean
       _queue.add(product);
 
-      Future.delayed(Duration(seconds: 3), () {
+      Future.delayed(Duration(milliseconds: 1500), () {
         Get.snackbar(
           'Produk Ditambahkan ke Antrean',
           'Produk akan disimpan otomatis saat koneksi internet tersedia',
           snackPosition: SnackPosition.BOTTOM,
           backgroundColor: Colors.orange,
           colorText: Colors.white,
-          duration: Duration(seconds: 3), 
+          duration: Duration(seconds: 3),
         );
       });
     }
@@ -134,6 +132,7 @@ class ShopController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green,
         colorText: Colors.white,
+        duration: Duration(seconds: 5),
       );
     }
   }
@@ -203,7 +202,7 @@ class ShopController extends GetxController {
       'Berhasil',
       'Produk Terhapus',
       snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.green,
+      backgroundColor: const Color.fromARGB(255, 73, 73, 73),
       colorText: Colors.white,
     );
   }
@@ -228,8 +227,18 @@ class ShopController extends GetxController {
             ),
             TextButton(
               onPressed: () {
-                deleteProduct(index);
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(); 
+                
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        Deleteproductsplashscreen(productName: product['name']),
+                  ),
+                ).then((_) {
+                  // Hapus produk setelah splash screen selesai
+                  deleteProduct(index);
+                });
               },
               child: Text("Hapus", style: TextStyle(color: Colors.red)),
             ),
@@ -404,7 +413,7 @@ class ShopController extends GetxController {
           priceController.clear();
           selectedImage.value = null;
           Navigator.pop(context);
-          showLoadingSplashScreen(context);
+          showUploadSplashScreen(context);
         } else {
           Get.snackbar('Error', 'Semua kolom harus diisi');
         }
@@ -416,8 +425,13 @@ class ShopController extends GetxController {
     );
   }
 
-  void showLoadingSplashScreen(BuildContext context) {
+  void showUploadSplashScreen(BuildContext context) {
     Get.to(() => SaveProductSplashScreen(productName: nameController.text),
-        opaque: false); 
+        opaque: false);
+  }
+
+  void showHapusSplashScreen(BuildContext context) {
+    Get.to(() => Deleteproductsplashscreen(productName: nameController.text),
+        opaque: false);
   }
 }
